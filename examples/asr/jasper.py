@@ -75,7 +75,7 @@ def create_all_dags(args, neural_factory):
 
     # Calculate num_workers for dataloader
     total_cpus = os.cpu_count()
-    cpu_per_traindl = max(int(total_cpus / neural_factory.world_size / 4.), 1)
+    cpu_per_traindl = 1  # max(int(total_cpus / neural_factory.world_size / 4.), 1)
 
     # perturb_config = jasper_params.get('perturb', None)
     train_dl_params = copy.deepcopy(jasper_params["AudioToTextDataLayer"])
