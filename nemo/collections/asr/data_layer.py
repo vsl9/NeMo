@@ -75,6 +75,8 @@ transcript_n}
             Defaults to True.
         num_workers (int): See PyTorch DataLoader.
             Defaults to 0.
+        lexicon_filepath (str): Dataset parameter.
+            Path to a lexicon file with phonetic transcriptions.
         perturb_config (dict): Currently disabled.
     """
 
@@ -125,6 +127,7 @@ transcript_n}
         drop_last=False,
         shuffle=True,
         num_workers=0,
+        lexicon_filepath=None,
         # perturb_config=None,
         **kwargs,
     ):
@@ -144,6 +147,7 @@ transcript_n}
             'bos_id': bos_id,
             'eos_id': eos_id,
             'load_audio': load_audio,
+            'lexicon_filepath': lexicon_filepath,
         }
         self._dataset = AudioDataset(**dataset_params)
 
@@ -429,7 +433,7 @@ class TranscriptDataLayer(DataLayerNM):
             texts[i].narrow(0, 0, s.size(0)).copy_(s)
 
         if len(texts.shape) != 2:
-            raise ValueError(f"Texts in collate function have shape {texts.shape}," f" should have 2 dimensions.")
+            raise ValueError(f"Texts in collate function have shape {texts.shape}, should have 2 dimensions.")
 
         return texts, torch.stack(texts_len)
 

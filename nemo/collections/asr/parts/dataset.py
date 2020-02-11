@@ -115,6 +115,7 @@ class AudioDataset(Dataset):
         bos_id: Id of beginning of sequence symbol to append if not None
         eos_id: Id of end of sequence symbol to append if not None
         load_audio: Boolean flag indicate whether do or not load audio
+        lexicon_filepath: Path to a lexicon file (phonetic vocabulary)
     """
 
     def __init__(
@@ -132,11 +133,13 @@ class AudioDataset(Dataset):
         bos_id=None,
         eos_id=None,
         load_audio=True,
+        lexicon_filepath=None,
     ):
         self.collection = collections.ASRAudioText(
             manifests_files=manifest_filepath.split(','),
             parser=parsers.ENCharParser(
                 labels=labels, unk_id=unk_index, blank_id=blank_index, do_normalize=normalize,
+                lexicon_filepath=lexicon_filepath,
             ),
             min_duration=min_duration,
             max_duration=max_duration,
@@ -231,7 +234,7 @@ class KaldiFeatureDataset(Dataset):
             )
         else:
             nemo.logging.info(
-                f"Did not find utt2dur when loading data from " f"{kaldi_dir}. Skipping dataset duration calculations."
+                f"Did not find utt2dur when loading data from {kaldi_dir}. Skipping dataset duration calculations."
             )
 
         # Match transcripts to features
@@ -279,7 +282,7 @@ class KaldiFeatureDataset(Dataset):
         if id2dur:
             # utt2dur durations are in seconds
             nemo.logging.info(
-                f"Dataset loaded with {duration / 60 : .2f} hours. " f"Filtered {filtered_duration / 60 : .2f} hours."
+                f"Dataset loaded with {duration / 60 : .2f} hours. Filtered {filtered_duration / 60 : .2f} hours."
             )
 
         self.data = data

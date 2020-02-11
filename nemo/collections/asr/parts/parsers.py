@@ -3,7 +3,8 @@ import string
 from typing import List, Optional
 
 import frozendict
-
+import numpy as np
+from collections import defaultdict
 from nemo.collections.asr.parts import cleaners
 
 
@@ -24,6 +25,7 @@ class CharParser:
         blank_id: int = -1,
         do_normalize: bool = True,
         do_lowercase: bool = True,
+        lexicon_filepath = None,
     ):
         """Creates simple mapping char parser.
 
@@ -37,6 +39,7 @@ class CharParser:
                 (default: True).
             do_lowercase: True if apply lowercasing at normalizing step
                 (default: True).
+            lexicon_filepath: Path to a lexicon file (phonetic vocabulary).
         """
 
         self._labels = labels
@@ -47,6 +50,22 @@ class CharParser:
 
         self._labels_map = {label: index for index, label in enumerate(labels)}
         self._special_labels = set([label for label in labels if len(label) > 1])
+
+    def _create_lexicon(self, lexicon_filepath):
+        """Loads phonetic vocabulary if provided"""
+        if lexicon_filepath is None:
+            self._lexicon = None
+            return
+        self._lexicon = defaultdict(lambda: [])
+        with open(lexicon_filepath, 'r') as f:
+            for line in f:
+                line = line.strip().replace('\t', ' ').replace('  ', ' ')
+                if self._do_lowercase:
+                    line = line.lower()
+                data = line.split()
+                word = data[0]
+                phonemes = [phoneme[:2] for phoneme in data[1:]]
+                self._lexicon[word].append(phonemes)
 
     def __call__(self, text: str) -> Optional[List[int]]:
         if self._do_normalize:
@@ -72,6 +91,17 @@ class CharParser:
         for word_id, word in enumerate(text.split(' ')):
             if word_id != 0:  # Not first word - so we insert space before.
                 tokens.append(self._labels_map.get(' ', self._unk_id))
+
+            if self._lexicon is not None:
+                transcriptions = self._lexicon[word]
+                if len(transcriptions)==0:
+                    # logging.warn('No transcription for "{}"'.format(word))
+                    return None
+                random_index = np.random.randint(len(transcriptions))
+                transcription = transcriptions[random_index]
+                for phoneme in transcription:
+                    tokens.append(self._labels_map[phoneme])
+                continue
 
             if word in self._special_labels:
                 tokens.append(self._labels_map[word])
