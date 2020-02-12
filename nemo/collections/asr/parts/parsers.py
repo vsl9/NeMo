@@ -50,6 +50,7 @@ class CharParser:
 
         self._labels_map = {label: index for index, label in enumerate(labels)}
         self._special_labels = set([label for label in labels if len(label) > 1])
+        self._create_lexicon(lexicon_filepath)
 
     def _create_lexicon(self, lexicon_filepath):
         """Loads phonetic vocabulary if provided"""
@@ -59,7 +60,7 @@ class CharParser:
         self._lexicon = defaultdict(lambda: [])
         with open(lexicon_filepath, 'r') as f:
             for line in f:
-                line = line.strip().replace('\t', ' ').replace('  ', ' ')
+                line = line.strip().replace('\t', ' ')
                 if self._do_lowercase:
                     line = line.lower()
                 data = line.split()
