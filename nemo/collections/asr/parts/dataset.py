@@ -327,6 +327,8 @@ class KaldiFeatureDataset(Dataset):
                         'audio': audio_features.t(),
                         'duration': dur,
                     }
+                    if sample['tokens'] is None:
+                        continue
 
                     data.append(sample)
                     duration += dur
