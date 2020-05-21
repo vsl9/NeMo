@@ -164,6 +164,7 @@ class AudioDataset(Dataset):
         bos_id: Id of beginning of sequence symbol to append if not None
         eos_id: Id of end of sequence symbol to append if not None
         load_audio: Boolean flag indicate whether do or not load audio
+        lexicon_filepath: Path to a lexicon file (phonetic vocabulary)
     """
 
     def __init__(
@@ -181,12 +182,13 @@ class AudioDataset(Dataset):
         bos_id=None,
         eos_id=None,
         load_audio=True,
+        lexicon_filepath=None,
         parser='en',
     ):
         self.collection = collections.ASRAudioText(
             manifests_files=manifest_filepath.split(','),
             parser=parsers.make_parser(
-                labels=labels, name=parser, unk_id=unk_index, blank_id=blank_index, do_normalize=normalize,
+                labels=labels, name=parser, unk_id=unk_index, blank_id=blank_index, do_normalize=normalize, lexicon_filepath=lexicon_filepath,
             ),
             min_duration=min_duration,
             max_duration=max_duration,

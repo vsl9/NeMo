@@ -247,6 +247,8 @@ transcript_n}
             Defaults to True.
         num_workers (int): See PyTorch DataLoader.
             Defaults to 0.
+        lexicon_filepath (str): Dataset parameter.
+            Path to a lexicon file with phonetic transcriptions.
         perturb_config (dict): Currently disabled.
         augmentor (AudioAugmentor or dict): Optional AudioAugmentor or
             dictionary of str -> kwargs (dict) which is parsed and used
@@ -297,6 +299,7 @@ transcript_n}
         drop_last=False,
         shuffle=True,
         num_workers=0,
+        lexicon_filepath=None,
         augmentor: Optional[Union[AudioAugmentor, Dict[str, Dict[str, Any]]]] = None,
     ):
         super().__init__()
@@ -321,6 +324,7 @@ transcript_n}
             'bos_id': bos_id,
             'eos_id': eos_id,
             'load_audio': load_audio,
+            'lexicon_filepath': lexicon_filepath,
         }
         self._dataset = AudioDataset(**dataset_params)
         self._batch_size = batch_size
