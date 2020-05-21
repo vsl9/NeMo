@@ -95,7 +95,7 @@ class CharParser:
                 tokens.append(self._labels_map.get(' ', self._unk_id))
 
             if self._lexicon is not None:
-                transcriptions = self._lexicon[word]
+                transcriptions = self._lexicon[word.lower()]
                 if len(transcriptions)==0:
                     # logging.warn('No transcription for "{}"'.format(word))
                     return None
