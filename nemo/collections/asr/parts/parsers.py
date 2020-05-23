@@ -61,9 +61,7 @@ class CharParser:
         self._lexicon = defaultdict(lambda: [])
         with open(lexicon_filepath, 'r') as f:
             for line in f:
-                line = line.strip().replace('\t', ' ')
-                if self._do_lowercase:
-                    line = line.lower()
+                line = line.lower().strip().replace('\t', ' ')
                 data = line.split()
                 word = data[0]
                 phonemes = [phoneme[:2] for phoneme in data[1:]]
