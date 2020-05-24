@@ -95,6 +95,9 @@ class CharParser:
             if self._lexicon is not None:
                 transcriptions = self._lexicon[word.lower()]
                 if len(transcriptions)==0:
+                    if word in self._labels_map:
+                        tokens.append(self._labels_map[word])
+                        continue
                     # logging.warn('No transcription for "{}"'.format(word))
                     return None
                 random_index = np.random.randint(len(transcriptions))
