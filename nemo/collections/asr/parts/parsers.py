@@ -64,7 +64,7 @@ class CharParser:
                 line = line.lower().strip().replace('\t', ' ')
                 data = line.split()
                 word = data[0]
-                phonemes = [phoneme[:2] for phoneme in data[1:]]
+                phonemes = [phoneme for phoneme in data[1:]]
                 self._lexicon[word].append(phonemes)
 
     def __call__(self, text: str) -> Optional[List[int]]:
